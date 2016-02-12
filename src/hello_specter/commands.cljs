@@ -80,7 +80,7 @@ returning a new turtle"
 
 (defcard-doc
   "
-#Implementation of Turtle Commands
+#Turtle Commands
 
 [:forward d] -> move turtle forward d steps in direction of heading, drawing a line
 
