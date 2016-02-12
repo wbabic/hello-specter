@@ -1,5 +1,6 @@
 (ns hello-specter.reagent
   (:require
+   [devcards.core]
    [reagent.core :as reagent]
    [sablono.core :as sab :include-macros true])
   (:require-macros

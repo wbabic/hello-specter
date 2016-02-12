@@ -1,6 +1,7 @@
 (ns hello-specter.svg
   "reder turtle commands to svg"
   (:require
+   [devcards.core]
    [cljs.core.match :refer-macros [match]]
    [reagent.core :as reagent]
    [sablono.core :as sab :include-macros true]

@@ -5,6 +5,9 @@
    lein figwheel
    http://localhost:3449/cards.html
 
+** pages
+   lein do clean, cljsbuild once pages
+
 ** reagent
    minimalistic react for clojurescript
    https://reagent-project.github.io
@@ -33,88 +36,3 @@
    nested persistent data structures
    standard library
    get-in and update-in
-
-   a bank and it's people
-   as a composite immutable data structure
-   indexed by the order in which they joined the bank
-   like so:
-   #+BEGIN_SRC clojure
-     (def world
-       {:people [{:money 1 :name ""}
-                 {:money 1 :name ""}
-                 {:money 1 :name ""}
-                 {:money 1 :name ""}
-                 {:money 1 :name ""}
-                 ]
-        :bank {:funds 1}})
-   #+END_SRC
-
-   now apply a transformation
-   that transfers monney from a user to the bank
-
-   #+BEGIN_SRC clojure
-     (defn user->bank [world name amt]
-     (let [;; First, find out how much money that user has
-           ;; to determine whether or not this is a valid transfer
-           curr-funds (->> world
-                           :people
-                           (filter (fn [user] (= (:name user) name)))
-                           first
-                           :money
-                           )]
-      (if (< curr-funds amt)
-        (throw (IllegalArgumentException. "Not enough funds!"))
-        ;; If valid, then need to subtract the transfer amount from the
-        ;; user and add the amount to the bank
-        (-> world
-            (update
-              :people
-              (fn [user-list]
-                ;; Important to use mapv to maintain the type of the
-                ;; sequence containing the list of users. This code
-                ;; modifies the user matching the name and keeps
-                ;; every other user in the sequence the same.
-                (mapv (fn [user]
-                        ;; Notice how nested this code is that manipulates the users
-                        (if (= (:name user) name)
-                          (update user :money #(+ % amt))
-                          ;; If a user doesn't match the name during the scan,
-                          ;; don't modify them
-                          user
-                          ))
-                      user-list)))
-            (update-in
-              [:bank :funds]
-              #(- % amt))
-              ))))
-   #+END_SRC
-
-   a better approach using select and transform
-   #+BEGIN_SRC clojure
-     (defn transfer
-       "Note that this function works on *any* world structure. This handles
-        arbitrary many to many transfers of a fixed amount without overdrawing anyone"
-       [world from-path to-path amt]
-       (let [;; Get the sequence of funds for all entities making a transfer
-             givers (select from-path world)
-
-             ;; Get the sequence of funds for all entities receiving a transfer
-             receivers (select to-path world)
-
-             ;; Compute total amount each receiver will be credited
-             total-receive (* amt (count givers))
-
-             ;; Compute total amount each transferrer will be deducted
-             total-give (* amt (count receivers))]
-
-         ;; Make sure every transferrer has sufficient funds
-         (if (every? #(>= % total-give) givers)
-           (->> world
-                ;; Deduct from transferrers
-                (transform from-path #(- % total-give))
-                ;; Credit the receivers
-                (transform to-path #(+ % total-receive))
-                )
-           (throw (IllegalArgumentException. "Not enough funds!"))
-           )))
-   #+END_SRC

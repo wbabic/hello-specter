@@ -1,5 +1,6 @@
 (ns hello-specter.commands
   (:require
+   [devcards.core]
    [reagent.core :as reagent]
    [sablono.core :as sab :include-macros true]
    [complex.number :as n])
