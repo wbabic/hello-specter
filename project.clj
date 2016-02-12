@@ -1,4 +1,4 @@
-(defproject hello-specter "0.1.0-SNAPSHOT"
+(defproject hello-specter "0.1.1"
   :description "an exploritory project using devcards and reagent"
   :url "http://wbabic.github.io/hello-specter"
   :license {:name "Eclipse Public License"
@@ -10,11 +10,11 @@
                  [org.clojure/tools.analyzer.jvm "0.6.9"]
 
                  [devcards "0.2.1-6" :exclusions [org.clojure/tools.reader]]
-                 [sablono "0.5.3"]
+                 [sablono "0.6.0"]
                  [reagent "0.5.1"]
                  [com.rpl/specter "0.8.0"]
 
-                 [prismatic/schema "1.0.3"]
+                 [prismatic/schema "1.0.5"]
                  [complex/complex "0.1.9"]
 
                  [org.clojure/core.match "0.3.0-alpha4"]
